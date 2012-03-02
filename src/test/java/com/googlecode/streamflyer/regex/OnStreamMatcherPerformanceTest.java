@@ -113,7 +113,7 @@ takes roughly
 		OnStreamMatcher matcher = createMatcher(onStreamMatcherClass, regex);
 
 		// create modifier
-		RegexModifierWithStatistics modifier = new RegexModifierWithStatistics( //
+		RegexModifier modifier = new RegexModifier( //
 				matcher, //
 				new ReplacingProcessor(replacement), //
 				0, //
@@ -199,7 +199,7 @@ takes roughly
 	}
 
 	private void assertReplacementByReader(String input,
-			RegexModifierWithStatistics modifier, String expectedOutput,
+			RegexModifier modifier, String expectedOutput,
 			double expectedMaxSpentTime) throws Exception {
 
 		// create reader
@@ -222,7 +222,7 @@ takes roughly
 	}
 
 	private void assertReplacementByWriter(String input,
-			RegexModifierWithStatistics modifier, String expectedOutput,
+			RegexModifier modifier, String expectedOutput,
 			double expectedMaxSpentTime) throws Exception {
 
 		// setup: create modifier and writer
@@ -259,39 +259,6 @@ takes roughly
 				foundSeconds, expectedMaxSeconds);
 		System.out.println(message);
 		assertTrue(message, foundSeconds <= expectedMaxSeconds);
-	}
-
-	private void assertStatistics(int minimumLengthOfLookBehind,
-			int requestedCapacityOfCharacterBuffer, String regex,
-			RegexModifierWithStatistics modifier) {
-
-		// (1) We assert that the capacity of the character buffer should not
-		// exceed the requested capacity by the factor two.
-
-		// let�s assume the regex matches not more than m characters.
-		// let's assume the buffer contains c characters (its capacity)
-		// the first c-1 characters do not match.
-		// the c-th character might be the start of the match
-		// the maximum allowed capacity may be n = c (initial value)
-		// then doubling the capacity n = n*2 until n >= (c-1) + m helps
-
-		// FIXME if the regex is greedy or contains groups or ...
-		int m = regex.length();
-		int n = requestedCapacityOfCharacterBuffer * 2;
-		while (n < (requestedCapacityOfCharacterBuffer - 1) + m) {
-			n = n * 2;
-		}
-
-		int maximumAllowedCapacity = n;
-		assertTrue(String.format("The maximum used"
-				+ " capacity of the character buffer (%s) should not"
-				+ " exceed the requested length of the character "
-				+ "buffer by the factor two (%s) but it does",
-				modifier.getMaxCapacityCharBuf(), maximumAllowedCapacity),
-				modifier.getMaxCapacityCharBuf() <= maximumAllowedCapacity);
-
-		// TODO Auto-generated method stub
-
 	}
 
 	@SuppressWarnings("unused")

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>streamflyer-regex-fast</artifactId>
   <name>streamflyer Fast Regex Matcher</name>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <description>streamflyer fastest regex matcher</description>
   <url>http://code.google.com/p/streamflyer-regex-fast/</url>
   <inceptionYear>2011</inceptionYear><!-- used by maven-license-plugin -->

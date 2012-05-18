@@ -96,7 +96,7 @@ takes roughly
 		assertPerformanceOfReplacements(size, OnStreamJava6Matcher.class, //
 				2.2, 2.6, 0.7);
 		assertPerformanceOfReplacements(size, OnStreamExtendedMatcher.class,
-				0.9, 1.1, 0.7);
+				0.9, 1.2, 0.7);
 	}
 
 	private void assertPerformanceOfReplacements(
@@ -109,16 +109,6 @@ takes roughly
 		String regex = "<x>(.*?)</x>";
 		String replacement = "<y>$1</y>";
 
-		// create matcher
-		OnStreamMatcher matcher = createMatcher(onStreamMatcherClass, regex);
-
-		// create modifier
-		RegexModifier modifier = new RegexModifier( //
-				matcher, //
-				new ReplacingProcessor(replacement), //
-				0, //
-				1000);
-
 		String input = createInput(numberOfCharactersInStream);
 		long start = System.currentTimeMillis();
 		String expectedOutput = input.replaceAll(regex, replacement);
@@ -128,38 +118,93 @@ takes roughly
 
 		// writeFileForComparisonWithPerl(input, expectedOutput);
 
-		assertReplacementByReader(input, modifier, expectedOutput,
-				expectedMaxSpentTimeByModifyingReader);
-		assertReplacementByWriter(input, modifier, expectedOutput,
-				expectedMaxSpentTimeByModifyingWriter);
+		int newNumberOfChars;
+
+		// test: max capacity
+		newNumberOfChars = 100;
+		// the number of characters to match in the worst case = 100 + 200 (max
+		// length of match)
+		// Therefore buffer length == 100 * 2 *2 does the job (doubled twice)
+		int expectedMaxLength = newNumberOfChars * 2 * 2;
+		assertReplacementByReader(
+				input,
+				createModifier(onStreamMatcherClass, regex, replacement,
+						newNumberOfChars, true), expectedOutput, null,
+				expectedMaxLength);
+		assertReplacementByWriter(
+				input,
+				createModifier(onStreamMatcherClass, regex, replacement,
+						newNumberOfChars, true), expectedOutput, null,
+				expectedMaxLength);
+
+		// test: max spent time
+		newNumberOfChars = 1000;
+		assertReplacementByReader(
+				input,
+				createModifier(onStreamMatcherClass, regex, replacement,
+						newNumberOfChars, false), expectedOutput,
+				expectedMaxSpentTimeByModifyingReader, null);
+		assertReplacementByWriter(
+				input,
+				createModifier(onStreamMatcherClass, regex, replacement,
+						newNumberOfChars, false), expectedOutput,
+				expectedMaxSpentTimeByModifyingWriter, null);
 	}
 
+	private RegexModifier createModifier(
+			Class<? extends OnStreamMatcher> onStreamMatcherClass,
+			String regex, String replacement, int newNumberOfChars,
+			boolean withStatistics) {
+		// create matcher
+		OnStreamMatcher matcher = createMatcher(onStreamMatcherClass, regex);
+
+		// create modifier
+		if (withStatistics)
+			return new RegexModifierWithStatistics( //
+					matcher, //
+					new ReplacingProcessor(replacement), //
+					0, //
+					newNumberOfChars);
+		else
+			return new RegexModifier( //
+					matcher, //
+					new ReplacingProcessor(replacement), //
+					0, //
+					newNumberOfChars);
+	}
+
+	/**
+	 * @param numberOfCharactersInStream
+	 * @return Returns a string containing segments of whitespace (max length
+	 *         399 characters) and segments of x-Elements containing whitespace
+	 *         (max length 199 characters).
+	 */
 	private String createInput(int numberOfCharactersInStream) {
 
 		StringBuilder sb = new StringBuilder(numberOfCharactersInStream);
 		Random random = new Random();
-		random.setSeed(43753658);
+		// random.setSeed(43753658);
+		random.setSeed(65753433);
 
 		int charsToAppend = 0;
-		while (sb.length() < numberOfCharactersInStream - 500) {
-			// append either any characters or characters to replace
-			if (random.nextBoolean()) {
+		while (sb.length() < numberOfCharactersInStream - 600) {
 
-				// append some characters
-				charsToAppend = random.nextInt(400 - 3);
-				for (int index = 0; index < charsToAppend; index++) {
-					sb.append(' ');
-				}
-
-				sb.append("<x>");
-
-				// append some characters
-				charsToAppend = random.nextInt(100 - 4);
-				for (int index = 0; index < charsToAppend; index++) {
-					sb.append(' ');
-				}
-				sb.append("</x>");
+			// append \s{0,399}, up to 399 whitespace characters
+			charsToAppend = random.nextInt(400);
+			for (int index = 0; index < charsToAppend; index++) {
+				sb.append(' ');
 			}
+
+			// append <x>\s{0,199}</x>, i.e. an x-Element containing up to 199
+			// whitespace characters
+			sb.append("<x>");
+
+			// append some characters
+			charsToAppend = random.nextInt(200);
+			for (int index = 0; index < charsToAppend; index++) {
+				sb.append(' ');
+			}
+			sb.append("</x>");
 		}
 
 		while (sb.length() < numberOfCharactersInStream) {
@@ -200,7 +245,8 @@ takes roughly
 
 	private void assertReplacementByReader(String input,
 			RegexModifier modifier, String expectedOutput,
-			double expectedMaxSpentTime) throws Exception {
+			Double expectedMaxSpentTime, Integer expectedMaxLength)
+			throws Exception {
 
 		// create reader
 		Reader reader = new ModifyingReader(new BufferedReader(
@@ -219,11 +265,14 @@ takes roughly
 
 		assertTime(end - start, expectedMaxSpentTime,
 				"Time spent by   ModifyingReader:");
+		assertMaxLength(modifier, expectedMaxLength,
+				"Max length by   ModifyingReader:");
 	}
 
 	private void assertReplacementByWriter(String input,
 			RegexModifier modifier, String expectedOutput,
-			double expectedMaxSpentTime) throws Exception {
+			Double expectedMaxSpentTime, Integer expectedMaxLength)
+			throws Exception {
 
 		// setup: create modifier and writer
 		StringWriter stringWriter = new StringWriter();
@@ -248,16 +297,53 @@ takes roughly
 
 		assertTime(end - start, expectedMaxSpentTime,
 				"Time spent by   ModifyingWriter:");
+		assertMaxLength(modifier, expectedMaxLength,
+				"Max length by   ModifyingWriter:");
 	}
 
-	private void assertTime(long duration, double expectedMaxSeconds,
+	private void assertMaxLength(RegexModifier modifier,
+			Integer expectedMaxLength, String callerDescription)
+			throws Exception {
+
+		if (expectedMaxLength == null) {
+			return;
+		}
+
+		RegexModifierWithStatistics modifierWithStatistics = (RegexModifierWithStatistics) modifier;
+
+		// test found max length
+		int foundMaxLength = modifierWithStatistics
+				.getMaxCharacterBufferLength();
+		String message = String.format(callerDescription
+				+ " Found max length %s shall not exceed"
+				+ " expected maximum of length %s but did exceed",
+				foundMaxLength, expectedMaxLength);
+		// System.out.println(message);
+		System.out.println(modifier);
+		assertTrue(message, foundMaxLength <= expectedMaxLength);
+
+		// test found max capacity in comparison to the found max length
+		int foundMaxCapacity = modifierWithStatistics
+				.getMaxCharacterBufferCapacity();
+
+		// see AbstractStringBuilder.ensureCapacity(int i), i.e. we have no full
+		// control over the capacity
+		assertTrue(foundMaxCapacity <= (foundMaxLength + 1) * 2);
+	}
+
+	private void assertTime(long duration, Double expectedMaxSeconds,
 			String callerDescription) throws Exception {
+
+		if (expectedMaxSeconds == null) {
+			return;
+		}
+
 		double foundSeconds = duration / 1000.0;
 		String message = String.format(callerDescription
 				+ " Found seconds %s shall not exceed"
 				+ " expected maximum of seconds %s but did exceed",
 				foundSeconds, expectedMaxSeconds);
-		System.out.println(message);
+		// System.out.println(message);
 		assertTrue(message, foundSeconds <= expectedMaxSeconds);
 	}
 

@@ -1,8 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <groupId>com.googlecode.streamflyerregexfast</groupId>
   <artifactId>streamflyer-regex-fast</artifactId>
   <name>streamflyer Fast Regex Matcher</name>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <description>streamflyer fastest regex matcher</description>
   <url>http://code.google.com/p/streamflyer-regex-fast/</url>
   <inceptionYear>2011</inceptionYear><!-- used by maven-license-plugin -->
@@ -23,6 +24,7 @@
 
     <!-- needed for javadoc, license and so on -->
     <streamflyer.parent>${project.basedir}</streamflyer.parent>
+    <streamflyer.version>1.0.0</streamflyer.version>
   </properties>
 
   <dependencies>
@@ -30,7 +32,7 @@
     <dependency>
       <groupId>com.googlecode.streamflyer</groupId>
       <artifactId>streamflyer-core</artifactId>
-      <version>${project.version}</version>
+      <version>${streamflyer.version}</version>
     </dependency>
 
     <dependency>
@@ -51,14 +53,14 @@
     <dependency>
       <groupId>com.googlecode.streamflyer</groupId>
       <artifactId>streamflyer-core</artifactId>
-      <version>${project.version}</version>
+      <version>${streamflyer.version}</version>
       <scope>test</scope>
       <classifier>tests</classifier>
     </dependency>
     <dependency>
       <groupId>com.googlecode.streamflyer</groupId>
       <artifactId>streamflyer-experimental</artifactId>
-      <version>${project.version}</version>
+      <version>${streamflyer.version}</version>
       <scope>test</scope>
       <classifier>tests</classifier>
     </dependency>

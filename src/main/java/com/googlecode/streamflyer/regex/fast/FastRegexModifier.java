@@ -22,8 +22,21 @@ import com.googlecode.streamflyer.regex.RegexModifier;
 import com.googlecode.streamflyer.regex.ReplacingProcessor;
 
 /**
- * Uses the fast OnStreamExtendedMatcher instead of the slower
+ * Uses the fast {@link OnStreamExtendedMatcher} instead of the slower
  * {@link OnStreamStandardMatcher}.
+ * 
+ * <code><pre class="prettyprint lang-java">// choose the character stream to modify
+Reader originalReader = new StringReader("edit stream");
+
+// select the modifier
+Modifier myModifier = new RegexModifier("edit stream", 0, "modify stream");
+
+// create the modifying reader that wraps the original reader
+Reader modifyingReader = new ModifyingReader(originalReader, myModifier);
+
+// use the modifying reader instead of the original reader
+String output = IOUtils.toString(modifyingReader);
+assertEquals("modify stream", output);</pre></code>
  * 
  * @author rwoo
  * 

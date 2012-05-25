@@ -70,17 +70,7 @@
 
   <build>
 
-    <!-- temporary exclude performance tests from the test suite -->
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/*PerformanceTest.java</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
 
       <!-- phase "package" should create the test.jar as well  -->
       <plugin>
@@ -111,6 +101,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.7.2</version>
+        <configuration>
+          <!-- temporary exclude performance tests from the test suite -->
+          <excludes>
+            <exclude>**/*PerformanceTest.java</exclude>
+          </excludes>
+        </configuration>
       </plugin>
       
 
@@ -124,10 +120,13 @@
         <configuration>
           <show>private</show>
           <use>true</use>
-          <overview>${streamflyer.parent}/src/main/javadoc/overview/overview.html</overview>
           <linksource>true</linksource>
           <docfilessubdirs>true</docfilessubdirs>
           <stylesheetfile>${streamflyer.parent}/src/main/javadoc/stylesheet/stylesheet-modified.css</stylesheetfile>
+          <!-- the online-linking requires access to <url>/package-list. alternatively, you could use <offlinelinks> -->
+          <links>
+            <link>http://javadoc.streamflyer.googlecode.com/hg/</link>
+          </links>
         </configuration>
         <!--  http://maven.apache.org/plugins/maven-javadoc-plugin/examples/aggregate.html#Using_The_aggregate_Goals 
           # generate the aggregated javadoc manually:
@@ -144,7 +143,6 @@
             <configuration>
               <show>private</show>
               <use>true</use>
-              <overview>${basedir}/src/main/javadoc/overview/overview.html</overview>
               <linksource>true</linksource>
               <!-- is obviously redundant (but why?) <javadocDirectory>${basedir}/src/main/javadoc</javadocDirectory> -->
               <docfilessubdirs>true</docfilessubdirs>

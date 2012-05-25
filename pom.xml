@@ -127,26 +127,6 @@
           <links>
             <link>http://javadoc.streamflyer.googlecode.com/hg/</link>
           </links>
-        </configuration>
-        <!--  http://maven.apache.org/plugins/maven-javadoc-plugin/examples/aggregate.html#Using_The_aggregate_Goals 
-          # generate the aggregated javadoc manually:
-          mvn site
-         -->
-        <executions>
-          <execution>
-            <id>aggregate</id>
-            <goals>
-              <goal>aggregate</goal>
-            </goals>
-            <phase>site</phase>
-            <!-- Specific configuration for the aggregate report -->
-            <configuration>
-              <show>private</show>
-              <use>true</use>
-              <linksource>true</linksource>
-              <!-- is obviously redundant (but why?) <javadocDirectory>${basedir}/src/main/javadoc</javadocDirectory> -->
-              <docfilessubdirs>true</docfilessubdirs>
-              <stylesheetfile>${basedir}/src/main/javadoc/stylesheet/stylesheet-modified.css</stylesheetfile>
               <footer xml:space="preserve"><![CDATA[
      
 <script type='text/javascript'>
@@ -222,9 +202,7 @@ else {
 </script>     
       ]]>
               </footer><!-- footer or bottom makes no difference for javascript -->
-            </configuration>
-          </execution>
-        </executions>
+        </configuration>
       </plugin>
 
         <!-- automatic signing of created artifacts (at least the classes jar)

@@ -22,14 +22,17 @@ import com.googlecode.streamflyer.regex.RegexModifier;
 import com.googlecode.streamflyer.regex.ReplacingProcessor;
 
 /**
- * Uses the fast {@link OnStreamExtendedMatcher} instead of the slower
+ * In comparison to {@link RegexModifier} this class uses the fast
+ * {@link OnStreamExtendedMatcher} instead of the slower
  * {@link OnStreamStandardMatcher}.
- * 
+ * <p>
+ * The class can be used exactly the same way as the (slower)
+ * {@link RegexModifier}:
  * <code><pre class="prettyprint lang-java">// choose the character stream to modify
 Reader originalReader = new StringReader("edit stream");
 
 // select the modifier
-Modifier myModifier = new RegexModifier("edit stream", 0, "modify stream");
+Modifier myModifier = new FastRegexModifier("edit stream", 0, "modify stream");
 
 // create the modifying reader that wraps the original reader
 Reader modifyingReader = new ModifyingReader(originalReader, myModifier);

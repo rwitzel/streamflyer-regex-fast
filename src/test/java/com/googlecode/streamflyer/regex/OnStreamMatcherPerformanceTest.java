@@ -34,8 +34,8 @@ import org.apache.commons.io.IOUtils;
 import com.googlecode.streamflyer.core.ModifyingReader;
 import com.googlecode.streamflyer.core.ModifyingWriter;
 import com.googlecode.streamflyer.experimental.regexj6.OnStreamJava6Matcher;
+import com.googlecode.streamflyer.internal.thirdparty.ZzzAssert;
 import com.googlecode.streamflyer.regex.fast.OnStreamExtendedMatcher;
-import com.googlecode.streamflyer.thirdparty.ZzzAssert;
 
 /**
  * Tests the performance of different implementations of {@link OnStreamMatcher}

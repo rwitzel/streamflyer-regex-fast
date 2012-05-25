@@ -21,8 +21,7 @@ import com.googlecode.streamflyer.regex.OnStreamMatcher;
 
 /**
  * Implements {@link OnStreamMatcher} using an extended
- * <code>java.util.regex</code> package. See class comment at
- * {@link OnStreamMatcher}.
+ * <code>java.util.regex</code> package.
  * <p>
  * This implementation is the fastest implementation of {@link OnStreamMatcher}
  * at the moment - it takes less than twice as much time as

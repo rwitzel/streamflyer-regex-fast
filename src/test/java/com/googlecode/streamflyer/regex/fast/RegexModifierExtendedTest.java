@@ -37,7 +37,7 @@ public class RegexModifierExtendedTest extends
 		com.googlecode.streamflyer.regex.RegexModifierTest {
 
 	@Override
-	protected OnStreamMatcher createMatcher(String regex) {
+	protected OnStreamMatcher createMatcher(String regex, int flags) {
 		Matcher matcher = Pattern.compile(regex).matcher("");
 		matcher.useTransparentBounds(true);
 		return new OnStreamExtendedMatcher(matcher);

@@ -222,6 +222,7 @@ takes roughly
 		if (onStreamMatcherClass.isAssignableFrom(OnStreamJava6Matcher.class)) {
 			Matcher matcher = Pattern.compile(regex).matcher("");
 			matcher.useTransparentBounds(true);
+			matcher.useAnchoringBounds(false);
 			return new OnStreamJava6Matcher(matcher);
 
 		} else if (onStreamMatcherClass

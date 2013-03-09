@@ -17,10 +17,14 @@
  */
 package com.googlecode.streamflyer.regex.fast;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.Reader;
 import java.io.StringReader;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
+import org.junit.Test;
 
 import com.googlecode.streamflyer.core.Modifier;
 import com.googlecode.streamflyer.core.ModifyingReader;
@@ -43,6 +47,7 @@ public class RegexModifierExtendedTest extends
 		return new OnStreamExtendedMatcher(matcher);
 	}
 
+	@Test
 	public void testExampleFromHomepage_usageRegexFast() throws Exception {
 
 		// choose the character stream to modify

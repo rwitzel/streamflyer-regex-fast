@@ -3,7 +3,7 @@
   <groupId>com.googlecode.streamflyer-regex-fast</groupId>
   <artifactId>streamflyer-regex-fast</artifactId>
   <name>streamflyer Fast Regex Matcher</name>
-  <version>1.0.1</version>
+  <version>1.0.2-SNAPSHOT</version>
   <description>streamflyer fastest regex matcher</description>
   <url>http://code.google.com/p/streamflyer-regex-fast/</url>
   <inceptionYear>2011</inceptionYear><!-- used by maven-license-plugin -->
@@ -24,7 +24,7 @@
 
     <!-- needed for javadoc, license and so on -->
     <streamflyer.parent>${project.basedir}</streamflyer.parent>
-    <streamflyer.version>1.0.1</streamflyer.version>
+    <streamflyer.version>1.0.2-SNAPSHOT</streamflyer.version>
   </properties>
 
   <dependencies>
@@ -42,12 +42,11 @@
     </dependency>
 
     <!-- required test scope dependencies ++++++++++++++++++++++++++++++++++ -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.2</version>
-      <scope>test</scope>
-    </dependency>
+	<dependency>
+	    <groupId>junit</groupId>
+	    <artifactId>junit</artifactId>
+	    <version>4.11</version>
+	</dependency>
 
     <!-- add dependency to the tests  -->
     <dependency>

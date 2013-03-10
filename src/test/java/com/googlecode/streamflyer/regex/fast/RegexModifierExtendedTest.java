@@ -42,7 +42,7 @@ public class RegexModifierExtendedTest extends
 
 	@Override
 	protected OnStreamMatcher createMatcher(String regex, int flags) {
-		Matcher matcher = Pattern.compile(regex).matcher("");
+		Matcher matcher = Pattern.compile(regex, flags).matcher("");
 		matcher.useTransparentBounds(true);
 		return new OnStreamExtendedMatcher(matcher);
 	}

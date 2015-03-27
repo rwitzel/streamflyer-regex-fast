@@ -24,7 +24,7 @@
 
     <!-- needed for javadoc, license and so on -->
     <streamflyer.parent>${project.basedir}</streamflyer.parent>
-    <streamflyer.version>1.0.2-SNAPSHOT</streamflyer.version>
+    <streamflyer.version>1.1.3</streamflyer.version>
   </properties>
 
   <dependencies>

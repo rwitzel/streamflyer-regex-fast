@@ -51,7 +51,7 @@ The Maven coordinates are
 
 ### Dependencies
 
-streamflyer-regex-fast-1.0. depends on [Streamflyer](http://code.google.com/p/streamflyer/) and [Commons IO](http://commons.apache.org/io/).
+streamflyer-regex-fast-1.0. depends on Streamflyer and [Commons IO](http://commons.apache.org/io/).
 
 The maven coordinates of theses dependencies are
 
